@@ -42,6 +42,7 @@
       <p class="eyebrow">Tempe Reunion Weekend</p>
       <h1>Sun Devil <span>Sip-Off</span></h1>
       <p class="tagline">Forks up. Bottoms up. Tempe never left us.</p>
+      <p id="live-status" class="live-pill" hidden></p>
     </div>
   </header>
 
@@ -177,7 +178,8 @@
           <button class="btn danger" id="reset-scores">Reset scores</button>
           <button class="btn danger" id="reset-all">Reset everything</button>
         </div>
-        <p class="hint">Everything saves on this device. Pass the phone around, or export the game file and load it on another phone to sync.</p>
+        <div id="account" class="account" hidden></div>
+        <p class="hint">Without live mode everything saves on this device: pass the phone around, or export the game file and load it on another phone. Set up Firebase (see README) and every phone shares one live scoreboard.</p>
       </div>
     </section>
   </main>
@@ -194,9 +196,18 @@
     </div>
   </div>
 
+  <div id="gate" class="gate" hidden>
+    <div class="gate-box">
+      <svg class="gate-fork" viewBox="0 0 140 200" aria-hidden="true"><use href="#pitchfork"/></svg>
+      <h2>Sun Devil Sip-Off</h2>
+      <div class="gate-body"><p class="gate-msg">Connecting to the crew…</p></div>
+    </div>
+  </div>
+
   <div id="toasts" class="toasts" aria-live="polite"></div>
   <div id="burst" class="burst" aria-hidden="true"></div>
 
+  <script src="js/firebase-config.js"></script>
   <script src="js/drinks.js"></script>
   <script src="js/cards.js"></script>
   <script src="js/app.js"></script>

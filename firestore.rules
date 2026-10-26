@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// Only the shared crew login can see or touch the scoreboard.
+// The email below must match CREW_EMAIL in js/firebase-config.js. The password lives in
+// Firebase Authentication, not here, so this file is safe to keep in a public repo.
+// Publish: Firebase console → Firestore → Rules → paste → Publish
+// (or `firebase deploy --only firestore:rules`).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isCrew() {
+      return request.auth != null
+        && request.auth.token.email == 'crew@sundevil-sipoff.app';
+    }
+
+    match /games/{gameId}/{document=**} {
+      allow read, write: if isCrew();
+    }
+  }
+}

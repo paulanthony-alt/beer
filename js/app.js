@@ -58,7 +58,18 @@ let importPlan = null;
 
 function save() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  if (window.Live && window.Live.active) window.Live.push(state);
 }
+
+// Called by sync.js whenever the shared game changes on any phone.
+function applyRemote(players, log) {
+  state.players = players;
+  state.log = log;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  render();
+}
+
+const isLive = () => Boolean(window.Live && window.Live.active);
 
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 const $ = (sel) => document.querySelector(sel);
@@ -533,7 +544,7 @@ function addPlayer(name, { silent = false } = {}) {
   if (!name) return null;
   const used = new Set(state.players.map((p) => p.avatar));
   const avatar = AVATARS.find((a) => !used.has(a)) || AVATARS[state.players.length % AVATARS.length];
-  const p = { id: uid(), name, avatar };
+  const p = { id: uid(), name, avatar, createdAt: Date.now() };
   state.players.push(p);
   save();
   if (!silent) toast(`${avatar} <b>${esc(name)}</b> is back in Tempe!`);
@@ -659,7 +670,7 @@ document.addEventListener("click", (ev) => {
   if (d.setavatar) { const p = player(d.setavatar); p.avatar = d.emoji; save(); closeModal(); render(); return; }
   if (d.delplayer) {
     const p = player(d.delplayer);
-    if (confirm(`Remove ${p.name} and all their drinks?`)) {
+    if (confirm(`Remove ${p.name} and all their drinks${isLive() ? " for everyone" : ""}?`)) {
       state.players = state.players.filter((x) => x.id !== p.id);
       state.log = state.log.filter((e) => e.pid !== p.id);
       selectedLog.delete(p.id);
@@ -725,10 +736,10 @@ document.addEventListener("click", (ev) => {
       break;
     }
     case "reset-scores":
-      if (confirm("Wipe all drinks and points but keep the crew?")) { state.log = []; save(); render(); toast("Scores reset. Fresh semester."); }
+      if (confirm(`Wipe all drinks and points${isLive() ? " for EVERYONE in the live game" : ""} but keep the crew?`)) { state.log = []; save(); render(); toast("Scores reset. Fresh semester."); }
       break;
     case "reset-all":
-      if (confirm("Delete EVERYTHING — crew, drinks, points?")) { state = freshState(); selectedLog.clear(); darePlayer = null; save(); render(); renderCatFilters(); renderDrinkGrid(); refillDeck(); toast("Everything wiped. Welcome to orientation."); }
+      if (confirm(`Delete EVERYTHING — crew, drinks, points${isLive() ? " — for everyone in the live game" : ""}?`)) { state = freshState(); selectedLog.clear(); darePlayer = null; save(); render(); renderCatFilters(); renderDrinkGrid(); refillDeck(); toast("Everything wiped. Welcome to orientation."); }
       break;
   }
 });
@@ -782,7 +793,7 @@ $("#import-file").addEventListener("change", async (ev) => {
       const idMap = {};
       for (const p of data.players) {
         let mine = byName.get(String(p.name).toLowerCase());
-        if (!mine) { mine = { id: uid(), name: String(p.name).slice(0, 24), avatar: p.avatar || "🔱" }; state.players.push(mine); byName.set(mine.name.toLowerCase(), mine); }
+        if (!mine) { mine = { id: uid(), name: String(p.name).slice(0, 24), avatar: p.avatar || "🔱", createdAt: Date.now() }; state.players.push(mine); byName.set(mine.name.toLowerCase(), mine); }
         idMap[p.id] = mine.id;
       }
       const have = new Set(state.log.map((e) => e.id));
@@ -811,3 +822,17 @@ renderDrinkGrid();
 refillDeck();
 render();
 setTab(state.ui.tab || "board", { scroll: false });
+
+// Live mode: sync.js takes over the sign-in gate. If Firebase can't even load, say so instead of hanging.
+if (window.FIREBASE_CONFIG) {
+  $("#gate").hidden = false;
+  const s = document.createElement("script");
+  s.type = "module";
+  s.src = "js/sync.js";
+  document.body.appendChild(s);
+  setTimeout(() => {
+    if (!window.Live) $("#gate .gate-body").innerHTML = location.protocol === "file:"
+      ? `<p class="gate-msg">Live mode needs the hosted link, not a file opened from your phone.</p>`
+      : `<p class="gate-msg">Couldn't load Firebase.</p><p class="hint">Check your connection and reload.</p>`;
+  }, 10000);
+}
