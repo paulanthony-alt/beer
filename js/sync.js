@@ -1,10 +1,12 @@
-// Live sync over Firebase. Every phone signs in with Google and shares one scoreboard.
+// Live sync over Firebase. Every phone enters the crew password and shares one scoreboard.
+// Under the hood the whole crew shares one Firebase email/password account, so Firebase
+// checks the password (and throttles guessing), and firestore.rules only lets that account in.
 // app.js keeps working on its local `state`; this module pushes whatever changed after
 // each save() and pours remote changes back in. Players and log entries are one Firestore
 // doc each, so two phones logging at the same time never overwrite each other.
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager, connectFirestoreEmulator,
   collection, doc, onSnapshot, writeBatch,
@@ -12,6 +14,7 @@ import {
 
 const config = window.FIREBASE_CONFIG;
 const gameId = window.GAME_ID || "tempe-reunion";
+const crewEmail = window.CREW_EMAIL || "crew@sundevil-sipoff.app";
 
 const gate = document.getElementById("gate");
 const pill = document.getElementById("live-status");
@@ -52,12 +55,33 @@ function start() {
     renderAccount(auth);
     if (!u) {
       setPill("signed-out");
-      showGate(`<p class="gate-msg">This scoreboard is invite-only. Sign in with the Google account your crew added.</p>
-        <button class="btn gold big" id="gate-signin">Sign in with Google</button>`);
-      document.getElementById("gate-signin").onclick = () =>
-        signInWithPopup(auth, new GoogleAuthProvider()).catch((e) => {
-          if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") toast(`Sign-in failed: ${esc(e.message)}`, { cls: "maroon" });
+      showGate(`<p class="gate-msg">Crew only. Enter the password.</p>
+        <form id="gate-form" class="gate-form">
+          <input class="input" id="gate-password" type="password" placeholder="Crew password" autocomplete="current-password" required>
+          <button class="btn gold big" type="submit">Forks up 🔱</button>
+          <p class="gate-error" id="gate-error" role="alert"></p>
+        </form>`);
+      const form = document.getElementById("gate-form");
+      const input = document.getElementById("gate-password");
+      input.focus();
+      form.onsubmit = (ev) => {
+        ev.preventDefault();
+        const btn = form.querySelector("button");
+        btn.disabled = true;
+        signInWithEmailAndPassword(auth, crewEmail, input.value).catch((e) => {
+          btn.disabled = false;
+          input.select();
+          const msg = {
+            "auth/invalid-credential": "Wrong password. Forks down. 👎",
+            "auth/wrong-password": "Wrong password. Forks down. 👎",
+            "auth/invalid-login-credentials": "Wrong password. Forks down. 👎",
+            "auth/too-many-requests": "Too many wrong guesses. Wait a few minutes and try again.",
+            "auth/network-request-failed": "No connection. Find some Wi-Fi and try again.",
+            "auth/user-not-found": "The crew account isn't set up yet. Check the README setup steps.",
+          }[e.code] || `Couldn't sign in: ${e.message}`;
+          document.getElementById("gate-error").textContent = msg;
         });
+      };
       return;
     }
     listen(auth);
@@ -73,9 +97,9 @@ function listen(auth) {
     stopListening();
     setPill("denied");
     if (e.code === "permission-denied") {
-      showGate(`<p class="gate-msg"><b>${esc(user.email)}</b> isn't on the guest list.</p>
-        <p class="hint">Ask whoever set this up to add your email to the Firestore rules, then reload.</p>
-        <button class="btn ghost" id="gate-signout">Use a different account</button>`);
+      showGate(`<p class="gate-msg">The password worked, but the database said no.</p>
+        <p class="hint">The email in firestore.rules has to match CREW_EMAIL in js/firebase-config.js (${esc(crewEmail)}).</p>
+        <button class="btn ghost" id="gate-signout">Sign out</button>`);
     } else {
       showGate(`<p class="gate-msg">Couldn't reach the scoreboard.</p><p class="hint">${esc(e.message)}</p>
         <button class="btn ghost" id="gate-signout">Sign out</button>`);
@@ -177,7 +201,7 @@ function hideGate() { gate.hidden = true; }
 function renderAccount(auth) {
   account.hidden = false;
   account.innerHTML = user
-    ? `<span>📡 Live game <b>${esc(gameId)}</b> · signed in as <b>${esc(user.displayName || user.email)}</b></span><button class="btn ghost small" id="signout">Sign out</button>`
+    ? `<span>📡 Live game <b>${esc(gameId)}</b> · this phone is signed in</span><button class="btn ghost small" id="signout">Sign out</button>`
     : `<span>📡 Live game <b>${esc(gameId)}</b> · signed out</span>`;
   const b = document.getElementById("signout");
   if (b) b.onclick = () => signOut(auth);

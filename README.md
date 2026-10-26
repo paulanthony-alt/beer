@@ -9,36 +9,44 @@ No install, no build. Two ways to play:
 - **One phone (default):** open `index.html` in any browser. Everything saves on that device. Pass it
   around as the official scorekeeper, or use **Crew → Export game file** / **Load game file** to move a game
   between phones.
-- **Live (everyone's phone):** set up Firebase (below). Everyone signs in with Google and shares one
-  scoreboard that updates instantly. Only the emails you list can get in.
+- **Live (everyone's phone):** set up Firebase (below). Everyone opens the link, types the crew password
+  once, and shares one scoreboard that updates instantly.
 
 ## Going live with Firebase (about 15 minutes, free)
 
+Everything here fits in Firebase's free Spark plan, so no credit card is needed. A weekend with a dozen friends
+uses a tiny fraction of the free daily limits.
+
 1. **Create a project** at [console.firebase.google.com](https://console.firebase.google.com) → *Add project*.
    You can skip Google Analytics.
-2. **Turn on Google sign-in:** *Build → Authentication → Get started → Sign-in method → Google → Enable*.
-3. **Create the database:** *Build → Firestore Database → Create database*. Pick a US West location and
+2. **Turn on passwords:** *Build → Authentication → Get started → Sign-in method → Email/Password → Enable*.
+3. **Create the crew login:** *Authentication → Users → Add user*. Email: `crew@sundevil-sipoff.app` (it
+   doesn't need to be a real inbox). Password: whatever the crew will type, at least 6 characters.
+   *Optional:* under *Authentication → Settings → User actions*, untick **Enable create (sign-up)**.
+4. **Create the database:** *Build → Firestore Database → Create database*. Pick a US West location and
    start in **production mode**.
-4. **Lock it to your crew:** open [`firestore.rules`](firestore.rules), replace the example emails with everyone's
-   Google account emails, then paste the whole file into *Firestore → Rules* and hit **Publish**.
-5. **Connect the app:** go to *Project settings (gear icon) → Your apps → Web (`</>`)*, register an app, and copy
+5. **Lock it to the crew:** paste the whole of [`firestore.rules`](firestore.rules) into *Firestore → Rules* and hit
+   **Publish**. It only lets the crew login in. The password isn't in this file, so it's safe to commit.
+6. **Connect the app:** go to *Project settings (gear icon) → Your apps → Web (`</>`)*, register an app, and copy
    the `firebaseConfig` values into [`js/firebase-config.js`](js/firebase-config.js). Commit and push.
-6. **Host it**, using either option:
+   (If you used a different crew email in step 3, change `CREW_EMAIL` there and the email in `firestore.rules`.)
+7. **Host it for free**, using either option:
    - **GitHub Pages** (the repo must be public on a free GitHub plan): repo *Settings → Pages → Deploy from a
-     branch → `main` / root*. Then in Firebase go to *Authentication → Settings → Authorized domains* and add
-     `paulanthony-alt.github.io`.
+     branch → `main` / root*.
    - **Firebase Hosting** (works with a private repo): install Node, then run
      `npm i -g firebase-tools`, `firebase login`, `firebase use --add` (pick your project) and `firebase deploy`.
-     Your link is `https://<project-id>.web.app`, and sign-in already works there.
-7. **Send the link to the group chat.** Everyone taps *Sign in with Google*, and anyone not on the list sees a
-   "not on the guest list" screen.
+     Your link is `https://<project-id>.web.app`.
+8. **Send the link and the password to the group chat.**
 
 Good to know:
-- To add someone mid-weekend, put their email in the rules, publish again, and have them reload.
+- Each phone asks for the password once and stays signed in. **Crew → Sign out** logs that phone out.
+- Firebase checks the password and locks out repeated wrong guesses for a while.
+- To change the password, delete the crew user in *Authentication → Users* and add it again with the new one.
+  Everyone re-enters it on their next visit.
 - If the first phone to go live already has a one-phone game on it, that game is uploaded as the starting
   scoreboard.
-- Anyone on the list can log for anyone, undo entries and reset scores, which is the point of a group game.
-  Resets ask for confirmation.
+- Anyone with the password can log for anyone, undo entries and reset scores, which is the point of a group
+  game. Resets ask for confirmation.
 - Phones that lose signal keep working and sync when they're back online.
 - To start a new game next year, change `GAME_ID` in `js/firebase-config.js`.
 
@@ -81,9 +89,9 @@ without water. Nobody has to drink, and nobody drives.
 - `js/drinks.js` — the drink catalog and point values (edit freely)
 - `js/cards.js` — the Drink-or-Dare deck and trivia
 - `js/app.js` — game logic, scoring, badges, import, persistence
-- `js/sync.js` — live mode: Google sign-in and Firestore sync (only loads when Firebase is configured)
-- `js/firebase-config.js` — your Firebase project config and game ID
-- `firestore.rules` — who's allowed in
+- `js/sync.js` — live mode: crew password gate and Firestore sync (only loads when Firebase is configured)
+- `js/firebase-config.js` — your Firebase project config, crew login email and game ID
+- `firestore.rules` — only the crew login gets in
 - `firebase.json` — for `firebase deploy` (hosting and rules)
 
 _Unofficial fan-made party game. Not affiliated with or endorsed by Arizona State University._

@@ -471,6 +471,9 @@ select.input { appearance: none; }
 .gate-msg { font-weight: 600; margin: 0 0 14px; }
 .gate-msg b { color: var(--gold); }
 .gate-body .btn { width: 100%; margin-top: 6px; }
+.gate-form { display: grid; gap: 8px; }
+.gate-form .input { text-align: center; font-size: 1.1rem; }
+.gate-error { min-height: 1.2em; margin: 4px 0 0; color: #ffc9c9; font-weight: 600; font-size: 0.9rem; }
 
 /* ---------- toasts / burst ---------- */
 

@@ -13,5 +13,9 @@ window.FIREBASE_CONFIG = null;
 //   appId: "1:1234567890:web:abc123",
 // };
 
+// The shared crew login. Create this user in Firebase (Authentication → Users → Add user) with the
+// password you'll tell your friends. It doesn't need to be a real inbox. Must match firestore.rules.
+window.CREW_EMAIL = "crew@sundevil-sipoff.app";
+
 // Every phone with the same GAME_ID shares one scoreboard. Change it to start a fresh game next year.
 window.GAME_ID = "tempe-reunion";
