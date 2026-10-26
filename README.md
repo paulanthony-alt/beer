@@ -54,7 +54,7 @@ Good to know:
 
 - **Scoreboard** — crew totals, a podium, and a card per player with tally marks, points, rank
   (Orientation Week → Freshman → … → Alumni Legend → Sparky Status), badges, and a play-by-play feed with undo.
-- **Log Drinks** — 328 drinks across 10 categories (Light & Lager, Craft & IPA, Arizona Local, Seltzers & Malt,
+- **Log Drinks** — 645 drinks across 10 categories (Domestic & Import, Craft & IPA, Arizona Local, Seltzers & Malt,
   Wine & Bubbly, Shots, Cocktails, Party Classics, Sun Devil Specials, Hydration Station). Pick one or more
   players, tap a drink, done. Custom drinks supported.
 - **Import** — paste what everyone's already had:
@@ -74,7 +74,7 @@ Roughly one point per standard drink, rounded up, plus hazard pay for the questi
 | Points | Tier | Examples |
 | --- | --- | --- |
 | 1 | Tempe Breeze | Bud Light, White Claw, Kilt Lifter, a glass of wine, water |
-| 2 | Mill Ave Buzz | IPA, any shot, Margarita, Ranch Water, shotgun a beer |
+| 2 | Mill Ave Buzz | IPA, any shot, Cinnamon Toast Crunch shot, Margarita, shotgun a beer |
 | 3 | Spring Break | Double IPA, Jägerbomb, Jungle Juice, Beer Bong, Keg Stand |
 | 4 | Frat Row | Long Island, Boot of Beer, Steel Reserve 24 oz, Sparky's Pitchfork |
 | 5+ | Hellfire | Four Loko, Everclear, Fishbowl, BORG, Power Hour, Centurion |
