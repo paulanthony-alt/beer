@@ -1,6 +1,6 @@
 # 🔱 Sun Devil Sip-Off
 
-An ASU-themed drink tracking party game for a Tempe reunion weekend. Forks up, bottoms up.
+An ASU-themed drink tracking party game. Forks up, bottoms up.
 
 ## Play it
 
@@ -48,13 +48,13 @@ Good to know:
 - Anyone with the password can log for anyone, undo entries and reset scores, which is the point of a group
   game. Resets ask for confirmation.
 - Phones that lose signal keep working and sync when they're back online.
-- To start a new game next year, change `GAME_ID` in `js/firebase-config.js`.
+- To start a fresh game for the next get-together, change `GAME_ID` in `js/firebase-config.js` to any new name.
 
 ## What's in it
 
 - **Scoreboard** — crew totals, a podium, and a card per player with tally marks, points, rank
   (Orientation Week → Freshman → … → Alumni Legend → Sparky Status), badges, and a play-by-play feed with undo.
-- **Log Drinks** — 328 drinks across 10 categories (Light & Lager, Craft & IPA, Arizona Local, Seltzers & Malt,
+- **Log Drinks** — 645 drinks across 10 categories (Domestic & Import, Craft & IPA, Arizona Local, Seltzers & Malt,
   Wine & Bubbly, Shots, Cocktails, Party Classics, Sun Devil Specials, Hydration Station). Pick one or more
   players, tap a drink, done. Custom drinks supported.
 - **Import** — paste what everyone's already had:
@@ -63,8 +63,10 @@ Good to know:
   Maria: White Claw x2, water
   ```
   Fuzzy matching handles nicknames like `natty`, `loko`, `marg`, `jager bomb`. New names become new players.
-- **Drink or Dare** — 155 cards: dares, drink cards, Never Have I Ever, Most Likely To, and ASU trivia.
+- **Drink or Dare** — 125 cards: dares, drink cards, Never Have I Ever, and Most Likely To.
   Do the dare for points or chicken out and drink. Toggle which decks are in play.
+- **Recipes** — 60 shot recipes (classics, dessert shots, layered, bombs, spicy and weird, party batches like
+  Jell-O and pudding shots, and Sun Devil specials) with ingredients, steps, and a button to log it.
 - **Badges** — Hat Trick, Hydration Homie, Local Legend, Traitor (drank a Tucson beer), Century Club, and more.
 
 ## Points
@@ -74,7 +76,7 @@ Roughly one point per standard drink, rounded up, plus hazard pay for the questi
 | Points | Tier | Examples |
 | --- | --- | --- |
 | 1 | Tempe Breeze | Bud Light, White Claw, Kilt Lifter, a glass of wine, water |
-| 2 | Mill Ave Buzz | IPA, any shot, Margarita, Ranch Water, shotgun a beer |
+| 2 | Mill Ave Buzz | IPA, any shot, Cinnamon Toast Crunch shot, Margarita, shotgun a beer |
 | 3 | Spring Break | Double IPA, Jägerbomb, Jungle Juice, Beer Bong, Keg Stand |
 | 4 | Frat Row | Long Island, Boot of Beer, Steel Reserve 24 oz, Sparky's Pitchfork |
 | 5+ | Hellfire | Four Loko, Everclear, Fishbowl, BORG, Power Hour, Centurion |
@@ -87,7 +89,8 @@ without water. Nobody has to drink, and nobody drives.
 - `index.html` — layout and the pitchfork header SVG
 - `css/styles.css` — maroon & gold everything
 - `js/drinks.js` — the drink catalog and point values (edit freely)
-- `js/cards.js` — the Drink-or-Dare deck and trivia
+- `js/cards.js` — the Drink-or-Dare deck
+- `js/recipes.js` — shot recipes (each one links to a drink in the catalog)
 - `js/app.js` — game logic, scoring, badges, import, persistence
 - `js/sync.js` — live mode: crew password gate and Firestore sync (only loads when Firebase is configured)
 - `js/firebase-config.js` — your Firebase project config, crew login email and game ID

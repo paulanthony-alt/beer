@@ -14,5 +14,6 @@ window.FIREBASE_CONFIG = {
 // password you'll tell your friends. It doesn't need to be a real inbox. Must match firestore.rules.
 window.CREW_EMAIL = "crew@sundevil-sipoff.app";
 
-// Every phone with the same GAME_ID shares one scoreboard. Change it to start a fresh game next year.
+// Every phone with the same GAME_ID shares one scoreboard. Change it to any new name to start a
+// fresh game (the old one stays saved under its old name).
 window.GAME_ID = "tempe-reunion";

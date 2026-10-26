@@ -201,8 +201,8 @@ function hideGate() { gate.hidden = true; }
 function renderAccount(auth) {
   account.hidden = false;
   account.innerHTML = user
-    ? `<span>📡 Live game <b>${esc(gameId)}</b> · this phone is signed in</span><button class="btn ghost small" id="signout">Sign out</button>`
-    : `<span>📡 Live game <b>${esc(gameId)}</b> · signed out</span>`;
+    ? `<span>📡 <b>Live</b> · this phone is signed in</span><button class="btn ghost small" id="signout">Sign out</button>`
+    : `<span>📡 <b>Live</b> · signed out</span>`;
   const b = document.getElementById("signout");
   if (b) b.onclick = () => signOut(auth);
 }
