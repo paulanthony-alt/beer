@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#8C1D40">
+  <title>Sun Devil Sip-Off</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔱</text></svg>">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="fork-lines" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M70 192 L70 30"/>
+        <path d="M30 44 C 30 86, 110 86, 110 44"/>
+        <path d="M30 46 C 30 36, 28 30, 22 22"/>
+        <path d="M110 46 C 110 36, 112 30, 118 22"/>
+        <path d="M54 170 L86 170"/>
+      </g>
+      <g id="fork-tips">
+        <path d="M58 36 L70 2 L82 36 L70 28 Z"/>
+        <path d="M12 34 L14 2 L32 26 L22 24 Z"/>
+        <path d="M128 34 L126 2 L108 26 L118 24 Z"/>
+      </g>
+      <symbol id="pitchfork" viewBox="0 0 140 200">
+        <use href="#fork-lines" stroke="#4a0b22" stroke-width="20"/>
+        <use href="#fork-tips" fill="#4a0b22" stroke="#4a0b22" stroke-width="10" stroke-linejoin="round"/>
+        <use href="#fork-lines" stroke="#FFC627" stroke-width="10"/>
+        <use href="#fork-tips" fill="#FFC627"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="hero">
+    <div class="sunrays" aria-hidden="true"></div>
+    <svg class="hero-fork" viewBox="0 0 140 200" role="img" aria-label="Sun Devil pitchfork"><use href="#pitchfork"/></svg>
+    <div class="hero-text">
+      <p class="eyebrow">Tempe Reunion Weekend</p>
+      <h1>Sun Devil <span>Sip-Off</span></h1>
+      <p class="tagline">Forks up. Bottoms up. Tempe never left us.</p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="board" class="active">🏆<span>Scoreboard</span></button>
+    <button role="tab" data-tab="log">🍺<span>Log Drinks</span></button>
+    <button role="tab" data-tab="dare">😈<span>Drink or Dare</span></button>
+    <button role="tab" data-tab="crew">🔱<span>Crew</span></button>
+  </nav>
+
+  <main>
+    <!-- SCOREBOARD -->
+    <section id="tab-board" class="tab-panel active">
+      <div id="crew-stats" class="stat-row"></div>
+      <div id="podium" class="podium"></div>
+      <div id="player-cards" class="player-cards"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Play-by-Play</h2>
+          <button class="btn ghost small" id="share-board">📋 Copy for group chat</button>
+        </div>
+        <ol id="feed" class="feed"></ol>
+      </div>
+    </section>
+
+    <!-- LOG DRINKS -->
+    <section id="tab-log" class="tab-panel">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>1. Who's drinking?</h2>
+          <button class="btn ghost small" id="log-select-all">Everyone</button>
+        </div>
+        <div id="log-players" class="chips"></div>
+      </div>
+
+      <div class="panel">
+        <h2>2. Pick the poison</h2>
+        <input id="drink-search" class="input" type="search" placeholder="Search 300+ drinks… (Four Loko, Ranch Water, Kilt Lifter)" autocomplete="off">
+        <div id="cat-filters" class="pills"></div>
+        <div id="drink-grid" class="drink-grid"></div>
+      </div>
+
+      <details class="panel">
+        <summary><h2>➕ Custom drink</h2></summary>
+        <form id="custom-form" class="row-form">
+          <input class="input" id="custom-name" placeholder="Drink name" required maxlength="60">
+          <select class="input" id="custom-pts" aria-label="Points">
+            <option value="1">1 pt · Tempe Breeze</option>
+            <option value="2" selected>2 pts · Mill Ave Buzz</option>
+            <option value="3">3 pts · Spring Break</option>
+            <option value="4">4 pts · Frat Row</option>
+            <option value="5">5 pts · Hellfire</option>
+            <option value="6">6 pts · Hellfire+</option>
+            <option value="8">8 pts · Legendary</option>
+            <option value="10">10 pts · Centurion</option>
+          </select>
+          <button class="btn gold" type="submit">Log it</button>
+        </form>
+      </details>
+
+      <details class="panel" id="import-panel">
+        <summary><h2>📥 Import what you've had</h2></summary>
+        <p class="hint">One player per line. Separate drinks with commas, add <code>x2</code> for repeats. New names become new players.</p>
+        <textarea id="import-text" class="input" rows="5" placeholder="Jake: Bud Light x3, Fireball, Long Island&#10;Maria: White Claw x2, water&#10;Tyler: Four Loko, Ranch Water"></textarea>
+        <div class="btn-row">
+          <button class="btn ghost" id="import-preview-btn">Preview</button>
+          <button class="btn gold" id="import-confirm-btn" disabled>Import</button>
+        </div>
+        <div id="import-preview"></div>
+      </details>
+    </section>
+
+    <!-- DRINK OR DARE -->
+    <section id="tab-dare" class="tab-panel">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Who's up?</h2>
+          <div class="btn-row tight">
+            <button class="btn ghost small" id="dare-random">🎲 Random</button>
+            <button class="btn ghost small" id="dare-next">Next ➜</button>
+          </div>
+        </div>
+        <div id="dare-players" class="chips"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Deck</h2>
+          <span class="hint" id="deck-count"></span>
+        </div>
+        <div id="deck-types" class="pills"></div>
+      </div>
+
+      <div class="card-stage">
+        <div id="dare-card" class="dare-card back">
+          <div class="card-inner">
+            <svg class="card-fork" viewBox="0 0 140 200" aria-hidden="true"><use href="#pitchfork"/></svg>
+            <p class="card-back-text">Tap to draw</p>
+          </div>
+        </div>
+      </div>
+      <div id="card-actions" class="card-actions"></div>
+      <button class="btn gold big" id="draw-card">Draw a card 🔱</button>
+    </section>
+
+    <!-- CREW -->
+    <section id="tab-crew" class="tab-panel">
+      <div class="panel">
+        <h2>The Crew</h2>
+        <form id="add-player" class="row-form">
+          <input class="input" id="player-name" placeholder="Add a Sun Devil (name or dorm nickname)" required maxlength="24">
+          <button class="btn gold" type="submit">Add</button>
+        </form>
+        <ul id="crew-list" class="crew-list"></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Rankings</h2>
+        <ul id="rank-list" class="rank-list"></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Badges</h2>
+        <ul id="badge-list" class="badge-list"></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Game Settings</h2>
+        <label class="toggle"><input type="checkbox" id="hydrate-toggle" checked> 💧 Hydration reminders (every 3 drinks without water)</label>
+        <div class="btn-row wrap">
+          <button class="btn ghost" id="export-btn">⬇️ Export game file</button>
+          <label class="btn ghost file-btn">⬆️ Load game file<input type="file" id="import-file" accept="application/json,.json" hidden></label>
+          <button class="btn danger" id="reset-scores">Reset scores</button>
+          <button class="btn danger" id="reset-all">Reset everything</button>
+        </div>
+        <p class="hint">Everything saves on this device. Pass the phone around, or export the game file and load it on another phone to sync.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>💧 Hydrate. 🚗 Never drive — call a ride. 🤝 Nobody has to drink; water counts for points too.</p>
+    <p class="fine">Unofficial fan-made party game. Not affiliated with or endorsed by Arizona State University.</p>
+  </footer>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Close">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <div id="burst" class="burst" aria-hidden="true"></div>
+
+  <script src="js/drinks.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
