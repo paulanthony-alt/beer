@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// Only the crew can see or touch the scoreboard.
+// Put everyone's Google account email in the list below, then publish these rules
+// (Firebase console → Firestore → Rules → paste → Publish, or `firebase deploy --only firestore:rules`).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isCrew() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in [
+          'you@gmail.com',
+          'friend1@gmail.com',
+          'friend2@gmail.com'
+        ];
+    }
+
+    match /games/{gameId}/{document=**} {
+      allow read, write: if isCrew();
+    }
+  }
+}
