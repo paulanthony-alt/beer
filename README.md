@@ -65,6 +65,8 @@ Good to know:
   Fuzzy matching handles nicknames like `natty`, `loko`, `marg`, `jager bomb`. New names become new players.
 - **Drink or Dare** — 125 cards: dares, drink cards, Never Have I Ever, and Most Likely To.
   Do the dare for points or chicken out and drink. Toggle which decks are in play.
+- **Recipes** — 60 shot recipes (classics, dessert shots, layered, bombs, spicy and weird, party batches like
+  Jell-O and pudding shots, and Sun Devil specials) with ingredients, steps, and a button to log it.
 - **Badges** — Hat Trick, Hydration Homie, Local Legend, Traitor (drank a Tucson beer), Century Club, and more.
 
 ## Points
@@ -88,6 +90,7 @@ without water. Nobody has to drink, and nobody drives.
 - `css/styles.css` — maroon & gold everything
 - `js/drinks.js` — the drink catalog and point values (edit freely)
 - `js/cards.js` — the Drink-or-Dare deck
+- `js/recipes.js` — shot recipes (each one links to a drink in the catalog)
 - `js/app.js` — game logic, scoring, badges, import, persistence
 - `js/sync.js` — live mode: crew password gate and Firestore sync (only loads when Firebase is configured)
 - `js/firebase-config.js` — your Firebase project config, crew login email and game ID

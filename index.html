@@ -49,6 +49,7 @@
     <button role="tab" data-tab="board" class="active">🏆<span>Scoreboard</span></button>
     <button role="tab" data-tab="log">🍺<span>Log Drinks</span></button>
     <button role="tab" data-tab="dare">😈<span>Drink or Dare</span></button>
+    <button role="tab" data-tab="recipes">🧪<span>Recipes</span></button>
     <button role="tab" data-tab="crew">🔱<span>Crew</span></button>
   </nav>
 
@@ -148,6 +149,17 @@
     </section>
 
     <!-- CREW -->
+    <!-- RECIPES -->
+    <section id="tab-recipes" class="tab-panel">
+      <div class="panel">
+        <h2>Shot Recipes</h2>
+        <input id="recipe-search" class="input" type="search" placeholder="Search shots or ingredients… (Fireball, Baileys, Red Bull)" autocomplete="off">
+        <div id="recipe-tags" class="pills"></div>
+        <p class="hint">Layered shots: pour each layer slowly over the back of a spoon. Bombs: the shot glass goes into the bigger drink.</p>
+      </div>
+      <div id="recipe-list" class="recipe-grid"></div>
+    </section>
+
     <section id="tab-crew" class="tab-panel">
       <div class="panel">
         <h2>The Crew</h2>
@@ -209,6 +221,7 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/drinks.js"></script>
   <script src="js/cards.js"></script>
+  <script src="js/recipes.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

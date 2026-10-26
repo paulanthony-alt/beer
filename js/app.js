@@ -303,6 +303,30 @@ function renderDrinkGrid() {
   }).join("") : `<p class="hint">No match. Use “Custom drink” below to add it.</p>`;
 }
 
+function renderRecipeTags() {
+  const tag = state.ui.recipeTag || "all";
+  $("#recipe-tags").innerHTML = [{ id: "all", label: "All", emoji: "🔱" }, ...RECIPE_TAGS]
+    .map((t) => `<button class="pill ${tag === t.id ? "on" : ""}" data-rtag="${t.id}">${t.emoji} ${t.label}</button>`).join("");
+}
+
+function renderRecipes() {
+  const tag = state.ui.recipeTag || "all";
+  const q = normalize($("#recipe-search").value);
+  const tagById = Object.fromEntries(RECIPE_TAGS.map((t) => [t.id, t]));
+  const list = RECIPES.filter((r) => (tag === "all" || r.tag === tag) && (!q || normalize(r.drink + " " + r.ings.join(" ")).includes(q)));
+  $("#recipe-list").innerHTML = list.length ? list.map((r) => {
+    const d = drinkById[slugify(r.drink)];
+    const t = tagById[r.tag];
+    return `<article class="recipe tag-${r.tag}">
+      <div class="recipe-head"><h3>${esc(r.drink)}</h3>${d ? `<b class="dt-pts">${d.pts}</b>` : ""}</div>
+      <span class="recipe-tag">${t.emoji} ${t.label}</span>
+      <ul class="recipe-ings">${r.ings.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>
+      <p class="recipe-steps">${esc(r.steps)}</p>
+      ${d ? `<button class="btn ghost small" data-recipelog="${d.id}">🍺 Log it</button>` : ""}
+    </article>`;
+  }).join("") : `<p class="hint">No recipe for that one yet.</p>`;
+}
+
 function renderDarePlayers() {
   if (darePlayer && !player(darePlayer)) darePlayer = null;
   if (!darePlayer && state.players.length) darePlayer = state.players[0].id;
@@ -629,6 +653,17 @@ document.addEventListener("click", (ev) => {
     return;
   }
   if (d.cat) { state.ui.cat = d.cat; save(); renderCatFilters(); renderDrinkGrid(); return; }
+  if (d.rtag) { state.ui.recipeTag = d.rtag; save(); renderRecipeTags(); renderRecipes(); return; }
+  if (d.recipelog) {
+    // Jump to the drink on the Log tab so it's logged for whoever's selected there.
+    state.ui.cat = "all";
+    $("#drink-search").value = drinkById[d.recipelog].name;
+    renderCatFilters();
+    renderDrinkGrid();
+    setTab("log");
+    toast(selectedLog.size ? "Tap the drink to log it" : "Pick who's drinking, then tap the drink");
+    return;
+  }
   if (d.drink) { logDrink(drinkById[d.drink], [...selectedLog]); t.classList.add("pop"); setTimeout(() => t.classList.remove("pop"), 300); return; }
   if (d.quicklog) { selectedLog = new Set([d.quicklog]); setTab("log"); renderLogPlayers(); return; }
   if (d.water) return logDrink(drinkById["water"], [d.water]);
@@ -724,6 +759,7 @@ $("#modal").addEventListener("click", (ev) => { if (ev.target.id === "modal") cl
 document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") closeModal(); });
 
 $("#drink-search").addEventListener("input", renderDrinkGrid);
+$("#recipe-search").addEventListener("input", renderRecipes);
 
 $("#add-player").addEventListener("submit", (ev) => {
   ev.preventDefault();
@@ -795,6 +831,8 @@ setInterval(renderBoard, 60000);
 
 renderCatFilters();
 renderDrinkGrid();
+renderRecipeTags();
+renderRecipes();
 refillDeck();
 render();
 setTab(state.ui.tab || "board", { scroll: false });
