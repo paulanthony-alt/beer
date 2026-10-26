@@ -1,6 +1,6 @@
 # 🔱 Sun Devil Sip-Off
 
-An ASU-themed drink tracking party game for a Tempe reunion weekend. Forks up, bottoms up.
+An ASU-themed drink tracking party game. Forks up, bottoms up.
 
 ## Play it
 
@@ -48,7 +48,7 @@ Good to know:
 - Anyone with the password can log for anyone, undo entries and reset scores, which is the point of a group
   game. Resets ask for confirmation.
 - Phones that lose signal keep working and sync when they're back online.
-- To start a new game next year, change `GAME_ID` in `js/firebase-config.js`.
+- To start a fresh game for the next get-together, change `GAME_ID` in `js/firebase-config.js` to any new name.
 
 ## What's in it
 
@@ -63,7 +63,7 @@ Good to know:
   Maria: White Claw x2, water
   ```
   Fuzzy matching handles nicknames like `natty`, `loko`, `marg`, `jager bomb`. New names become new players.
-- **Drink or Dare** — 155 cards: dares, drink cards, Never Have I Ever, Most Likely To, and ASU trivia.
+- **Drink or Dare** — 125 cards: dares, drink cards, Never Have I Ever, and Most Likely To.
   Do the dare for points or chicken out and drink. Toggle which decks are in play.
 - **Badges** — Hat Trick, Hydration Homie, Local Legend, Traitor (drank a Tucson beer), Century Club, and more.
 
@@ -87,7 +87,7 @@ without water. Nobody has to drink, and nobody drives.
 - `index.html` — layout and the pitchfork header SVG
 - `css/styles.css` — maroon & gold everything
 - `js/drinks.js` — the drink catalog and point values (edit freely)
-- `js/cards.js` — the Drink-or-Dare deck and trivia
+- `js/cards.js` — the Drink-or-Dare deck
 - `js/app.js` — game logic, scoring, badges, import, persistence
 - `js/sync.js` — live mode: crew password gate and Firestore sync (only loads when Firebase is configured)
 - `js/firebase-config.js` — your Firebase project config, crew login email and game ID

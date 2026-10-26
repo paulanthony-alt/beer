@@ -30,7 +30,6 @@ const BADGES = [
   { id: "iced", emoji: "🧊", name: "Got Iced", desc: "Smirnoff Ice'd", test: (s) => s.ids.has("smirnoff-ice") },
   { id: "dare", emoji: "🤘", name: "Daredevil", desc: "Completed 5 dares", test: (s) => s.dares >= 5 },
   { id: "chicken", emoji: "🐔", name: "Chicken Little", desc: "Chickened out 3 times", test: (s) => s.chickens >= 3 },
-  { id: "brain", emoji: "🧠", name: "Barrett Brain", desc: "3 trivia answers right", test: (s) => s.trivia >= 3 },
   { id: "ten", emoji: "🔟", name: "Double Digits", desc: "10 drinks logged", test: (s) => s.drinks >= 10 },
   { id: "century", emoji: "💯", name: "Century Club", desc: "100 points", test: (s) => s.points >= 100 },
 ];
@@ -81,7 +80,7 @@ const drinkById = Object.fromEntries(DRINKS.map((d) => [d.id, d]));
 // ---------- stats ----------
 
 function statsFor(pid) {
-  const s = { points: 0, drinks: 0, waters: 0, dares: 0, chickens: 0, trivia: 0, sips: 0, maxPts: 0, byCat: {}, ids: new Set(), favs: {}, sinceWater: 0 };
+  const s = { points: 0, drinks: 0, waters: 0, dares: 0, chickens: 0, sips: 0, maxPts: 0, byCat: {}, ids: new Set(), favs: {}, sinceWater: 0 };
   for (const c of CATEGORIES) s.byCat[c.id] = 0;
   for (const e of state.log) {
     if (e.pid !== pid) continue;
@@ -100,7 +99,6 @@ function statsFor(pid) {
       }
     } else if (e.kind === "dare") s.dares++;
     else if (e.kind === "chicken") s.chickens++;
-    else if (e.kind === "trivia") s.trivia++;
     else if (e.kind === "sips") s.sips += e.sips || 0;
   }
   const fav = Object.entries(s.favs).sort((a, b) => b[1] - a[1])[0];
@@ -238,7 +236,7 @@ function renderBoard() {
         <p class="progress-label">${r.next ? `${r.next.min - s.points} pts to ${r.next.title}` : "Max rank. Sparky salutes you."}</p>
         <div class="tallies" aria-label="${s.drinks} drinks">${tallyMarks(s.drinks)}</div>
         <div class="pc-meta">
-          <span>🍺 ${s.drinks}</span><span>💧 ${s.waters}</span><span>😈 ${s.dares}</span><span>🧠 ${s.trivia}</span>${s.chickens ? `<span>🐔 ${s.chickens}</span>` : ""}
+          <span>🍺 ${s.drinks}</span><span>💧 ${s.waters}</span><span>😈 ${s.dares}</span>${s.chickens ? `<span>🐔 ${s.chickens}</span>` : ""}
         </div>
         ${cats ? `<div class="mini-cats">${cats}</div>` : ""}
         ${s.badges.length ? `<div class="pc-badges">${s.badges.map((b) => `<span title="${b.name}: ${b.desc}">${b.emoji}</span>`).join("")}</div>` : ""}
@@ -363,19 +361,13 @@ function showCard(card) {
   const type = DECK_TYPES.find((d) => d.id === card.type);
   const who = player(darePlayer);
   el.className = `dare-card face type-${card.type}`;
-  let body = "";
-  if (card.type === "trivia") {
-    body = `<p class="card-text">${esc(card.q)}</p>`;
-  } else {
-    body = `<p class="card-text">${esc(card.text)}</p>`;
-  }
+  const body = `<p class="card-text">${esc(card.text)}</p>`;
   const reward = card.type === "dare" ? `<span class="card-reward">Do it: +${card.pts} · Chicken: drink ${card.sips}</span>`
-    : card.type === "trivia" ? `<span class="card-reward">Right: +${card.pts} · Wrong: drink ${card.sips}</span>`
     : card.water ? `<span class="card-reward">💧 +1 per water</span>`
     : `<span class="card-reward">${card.sips} sip${card.sips === 1 ? "" : "s"} = ${card.sips} pt${card.sips === 1 ? "" : "s"}</span>`;
   el.innerHTML = `<div class="card-inner">
     <div class="card-banner">${type.emoji} ${type.label}</div>
-    ${who && (card.type === "dare" || card.type === "trivia" || card.select === "self") ? `<p class="card-for">${who.avatar} ${esc(who.name)}, you're up</p>` : ""}
+    ${who && (card.type === "dare" || card.select === "self") ? `<p class="card-for">${who.avatar} ${esc(who.name)}, you're up</p>` : ""}
     ${body}
     ${reward}
     <svg class="card-corner" viewBox="0 0 140 200" aria-hidden="true"><use href="#pitchfork"/></svg>
@@ -388,8 +380,6 @@ function renderCardActions(card) {
   const who = player(darePlayer);
   if (card.type === "dare") {
     box.innerHTML = `<div class="btn-row"><button class="btn gold" data-act="dare-done">✅ Did it (+${card.pts})</button><button class="btn ghost" data-act="dare-chicken">🐔 Chicken — drink ${card.sips}</button></div>`;
-  } else if (card.type === "trivia") {
-    box.innerHTML = `<div class="trivia-options">${card.options.map((o, i) => `<button class="btn ghost option" data-opt="${i}">${String.fromCharCode(65 + i)}. ${esc(o)}</button>`).join("")}</div>`;
   } else if (card.select === "self") {
     box.innerHTML = `<div class="btn-row"><button class="btn gold" data-act="self">🍺 ${esc(who.name)} drank (+${card.sips})</button><button class="btn ghost" data-act="skip">Skip</button></div>`;
   } else {
@@ -400,7 +390,7 @@ function renderCardActions(card) {
   }
 }
 
-function resolveCard(act, extra) {
+function resolveCard(act) {
   const card = currentCard;
   if (!card) return;
   const pid = darePlayer;
@@ -417,19 +407,6 @@ function resolveCard(act, extra) {
         addEntries(pids.map((id) => ({ pid: id, kind: "drink", drinkId: water.id, name: water.name, cat: water.cat, pts: water.pts, alc: false })));
       } else logSips(pids, card.sips, DECK_TYPES.find((d) => d.id === card.type).label);
     }
-  } else if (act === "trivia") {
-    const right = extra === card.answer;
-    document.querySelectorAll("#card-actions .option").forEach((b, i) => {
-      b.disabled = true;
-      if (i === card.answer) b.classList.add("right");
-      else if (i === extra) b.classList.add("wrong");
-    });
-    if (right) addEntries([{ pid, kind: "trivia", name: "Trivia", pts: card.pts }]);
-    else logSips([pid], card.sips, "Missed trivia");
-    $("#card-actions").insertAdjacentHTML("beforeend", `<p class="trivia-result ${right ? "right" : "wrong"}">${right ? "🎓 Correct! Barrett material." : `❌ Nope — it's <b>${esc(card.options[card.answer])}</b>. Drink up.`}</p>`);
-    currentCard = null;
-    advancePlayer();
-    return;
   }
   currentCard = null;
   $("#card-actions").innerHTML = "";
@@ -687,8 +664,7 @@ document.addEventListener("click", (ev) => {
     return;
   }
   if (d.act) return resolveCard(d.act);
-  if (d.opt !== undefined) return resolveCard("trivia", parseInt(d.opt, 10));
-
+  
   switch (t.id) {
     case "log-select-all": {
       const all = state.players.every((p) => selectedLog.has(p.id));

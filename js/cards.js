@@ -7,7 +7,6 @@ const DECK_TYPES = [
   { id: "drink", label: "Drink Cards", emoji: "🍺" },
   { id: "nhie", label: "Never Have I Ever", emoji: "🙊" },
   { id: "mlt", label: "Most Likely To", emoji: "👉" },
-  { id: "trivia", label: "ASU Trivia", emoji: "🎓" },
 ];
 
 const DARES = [
@@ -123,7 +122,7 @@ const NHIE = [
 
 const MLT = [
   "still have their student ID in their wallet.",
-  "show up to the next reunion in a full ASU jersey.",
+  "show up next time in a full ASU jersey.",
   "get a Sparky tattoo.",
   "cry during the fight song.",
   "text their college ex tonight.",
@@ -141,43 +140,10 @@ const MLT = [
   "Irish-exit tonight without saying goodbye.",
   "become an ASU professor someday.",
   "get sunburned in October.",
-  "actually plan next year's reunion.",
+  "actually plan the next one.",
   "still have their dorm-room posters.",
   "post way too many stories from this weekend.",
   "have the worst hangover tomorrow.",
-];
-
-const TRIVIA = [
-  { q: "What year was ASU founded (as the Tempe Normal School)?", options: ["1885", "1899", "1912", "1946"], answer: 0 },
-  { q: "What were ASU's teams called right before they became the Sun Devils?", options: ["Owls", "Bulldogs", "Rattlers", "Cowboys"], answer: 1 },
-  { q: "What year did ASU officially become the Sun Devils?", options: ["1931", "1946", "1958", "1965"], answer: 1 },
-  { q: "What's the name of ASU's mascot?", options: ["Sparky", "Blaze", "Lucifer", "Scorch"], answer: 0 },
-  { q: "What's the name of the trophy awarded in the ASU vs. U of A rivalry game?", options: ["The Copper Kettle", "The Grand Canyon Trophy", "The Territorial Cup", "The Saguaro Bowl"], answer: 2 },
-  { q: "Which famous architect designed Gammage Auditorium?", options: ["I.M. Pei", "Frank Gehry", "Le Corbusier", "Frank Lloyd Wright"], answer: 3 },
-  { q: "The \"A\" on A Mountain sits on which butte?", options: ["Hayden Butte", "Camelback Mountain", "Papago Buttes", "Piestewa Peak"], answer: 0 },
-  { q: "What are ASU's official colors?", options: ["Crimson & Gold", "Maroon & Gold", "Maroon & White", "Burgundy & Yellow"], answer: 1 },
-  { q: "What's the name of the ASU hand sign?", options: ["Horns Up", "Pitch Up", "Forks Up", "Devils Up"], answer: 2 },
-  { q: "What jersey number did Pat Tillman wear at ASU?", options: ["12", "24", "40", "42"], answer: 3 },
-  { q: "How long is Pat's Run, the annual race honoring Pat Tillman?", options: ["5K", "4.0 miles", "4.2 miles", "10K"], answer: 2 },
-  { q: "Which conference did ASU join in 2024?", options: ["Big 12", "Big Ten", "SEC", "Mountain West"], answer: 0 },
-  { q: "What's the ASU basketball student-section stunt where a curtain reveals a bizarre scene behind the hoop?", options: ["The Devil's Den", "The Curtain of Distraction", "The Free-Throw Freakout", "The Maroon Veil"], answer: 1 },
-  { q: "Which golf legend played at ASU?", options: ["Tiger Woods", "Jordan Spieth", "Phil Mickelson", "Rickie Fowler"], answer: 2 },
-  { q: "Which all-time home-run king played college baseball at ASU?", options: ["Barry Bonds", "Hank Aaron", "Mark McGwire", "Alex Rodriguez"], answer: 0 },
-  { q: "What's the palm-lined path through the heart of the Tempe campus called?", options: ["Palm Row", "Palm Walk", "Sun Devil Way", "Fronds Lane"], answer: 1 },
-  { q: "Which ASU homecoming-week tradition — the school's oldest — has students walking up A Mountain with lights?", options: ["The Torch Run", "The Lantern Walk", "The Glow Climb", "The Fire Parade"], answer: 1 },
-  { q: "Which river do ASU students famously float on tubes?", options: ["Gila River", "Verde River", "Colorado River", "Salt River"], answer: 3 },
-  { q: "After an undefeated 1996 regular season, which bowl did ASU play in?", options: ["Fiesta Bowl", "Rose Bowl", "Sugar Bowl", "Orange Bowl"], answer: 1 },
-  { q: "Who was ASU's quarterback on that 1996 Rose Bowl team?", options: ["Jake Plummer", "Andrew Walter", "Rudy Carpenter", "Brock Osweiler"], answer: 0 },
-  { q: "The field at Sun Devil Stadium is named after which legendary coach?", options: ["Dennis Erickson", "Frank Kush", "Bruce Snyder", "Herm Edwards"], answer: 1 },
-  { q: "What's the naming-rights name of ASU's football stadium since 2023?", options: ["State Farm Stadium", "Chase Field", "Mountain America Stadium", "Footprint Center"], answer: 2 },
-  { q: "Which rival rallying cry is basically illegal to say at this party?", options: ["Hook 'em", "Bear Down", "Boomer Sooner", "Sic 'em"], answer: 1 },
-  { q: "What's ASU's student section known as?", options: ["The Inferno", "The Furnace", "The Pit", "The Oven"], answer: 0 },
-  { q: "Sparky the Sun Devil was originally drawn by...", options: ["A football coach", "A student contest winner", "A former Disney illustrator", "A Marvel comics artist"], answer: 2 },
-  { q: "Who has been ASU's president since 2002?", options: ["Michael Crow", "Lattie Coor", "Mark Emmert", "Robert Robbins"], answer: 0 },
-  { q: "Which ASU dorm is famously nicknamed \"Manzy\"?", options: ["Manzanita Hall", "Mariposa Hall", "Mesquite Hall", "Manzano Hall"], answer: 0 },
-  { q: "Who became ASU's head football coach for the 2023 season?", options: ["Herm Edwards", "Todd Graham", "Kenny Dillingham", "Dennis Erickson"], answer: 2 },
-  { q: "Which running back powered ASU's 2024 Big 12 title run?", options: ["Cam Skattebo", "Ryan Torain", "Eno Benjamin", "D.J. Foster"], answer: 0 },
-  { q: "Tempe Town Lake was created in the bed of which river?", options: ["Verde River", "Salt River", "Gila River", "Santa Cruz River"], answer: 1 },
 ];
 
 function buildDeck(enabledTypes) {
@@ -186,7 +152,6 @@ function buildDeck(enabledTypes) {
   if (enabledTypes.includes("drink")) for (const c of DRINK_CARDS) deck.push({ type: "drink", ...c });
   if (enabledTypes.includes("nhie")) for (const t of NHIE) deck.push({ type: "nhie", text: "Never have I ever " + t, sips: 1, select: "pick" });
   if (enabledTypes.includes("mlt")) for (const t of MLT) deck.push({ type: "mlt", text: "Who's most likely to " + t, sips: 2, select: "one" });
-  if (enabledTypes.includes("trivia")) for (const t of TRIVIA) deck.push({ type: "trivia", ...t, pts: 3, sips: 2 });
   for (let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
